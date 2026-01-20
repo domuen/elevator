@@ -2,21 +2,16 @@
 	import { onMount } from 'svelte';
 	import LeftElevator from './components/LeftElevator.svelte';
 	import RightElevator from './components/RightElevator.svelte';
-	import { checkElevatorL, handleLeftButtonPressed } from './utils';
-	import type { Elevator } from './types';
+	import Elevator from './classes/Elevator.svelte';
 
 	let tickSpeed = 1_000;
 	let floors: number[] = [9, 8, 7, 6, 5, 4, 3, 2, 1];
 
-	let elevatorL = $state<Elevator>({
-		floor: 1,
-		buttonsPressed: [],
-		nextStop: undefined
-	});
+	const elevatorL = new Elevator(1);
 
 	onMount(() => {
 		const interval = setInterval(() => {
-			checkElevatorL(elevatorL);
+			elevatorL.check();
 		}, tickSpeed);
 
 		return () => {
@@ -31,7 +26,7 @@
 		<LeftElevator
 			elevatorLFloor={elevatorL.floor}
 			{floor}
-			handleLeftButtonPressed={handleLeftButtonPressed(elevatorL.buttonsPressed)}
+			handleLeftButtonPressed={(btn) => elevatorL.handleButtonPress(btn)}
 		/>
 
 		<!-- elevator R -->
