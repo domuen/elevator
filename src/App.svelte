@@ -33,3 +33,13 @@
 		<RightElevator {tickSpeed} {floor} />
 	</div>
 {/each}
+
+<style>
+	.floor {
+		display: flex;
+		gap: 50px;
+		width: 100%;
+		min-height: 100px;
+		border-top: 1px solid white;
+	}
+</style>

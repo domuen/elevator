@@ -22,7 +22,7 @@
 	};
 </script>
 
-<div class="elevator-r">
+<div class="container">
 	<div class="buttons">
 		<button class="button" onclick={() => handleRightButtonPressed(floor, 1, Date.now())}>⬆️</button
 		>
@@ -36,3 +36,24 @@
 		})}
 	></div>
 </div>
+
+<style>
+	.container {
+		display: flex;
+	}
+
+	.elevator {
+		width: 50px;
+		height: 100px;
+	}
+
+	.elevator-active {
+		background-color: red;
+	}
+
+	.buttons {
+		display: flex;
+		flex-direction: column;
+		gap: 1px;
+	}
+</style>

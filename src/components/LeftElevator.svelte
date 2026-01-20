@@ -11,7 +11,7 @@
 	let { elevatorLFloor, floor, handleLeftButtonPressed }: Props = $props();
 </script>
 
-<div class="elevator-l">
+<div class="container">
 	<div
 		class={classnames('elevator', {
 			'elevator-active': elevatorLFloor === floor
@@ -39,3 +39,24 @@
 		>
 	</div>
 </div>
+
+<style>
+	.container {
+		display: flex;
+	}
+
+	.elevator {
+		width: 50px;
+		height: 100px;
+	}
+
+	.elevator-active {
+		background-color: red;
+	}
+
+	.buttons {
+		display: flex;
+		flex-direction: column;
+		gap: 1px;
+	}
+</style>
