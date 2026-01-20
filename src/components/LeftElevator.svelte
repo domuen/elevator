@@ -3,12 +3,23 @@
 	import type { ButtonPressed } from '../types';
 
 	interface Props {
-		elevatorLFloor: number;
 		floor: number;
+		elevatorLFloor: number;
 		handleLeftButtonPressed: (buttonPressed: ButtonPressed) => void;
 	}
 
 	let { elevatorLFloor, floor, handleLeftButtonPressed }: Props = $props();
+	let selectingFloor: undefined | ButtonPressed['direciton'] = $state(undefined);
+
+	const handleSelectFloor = (selectedFloor: number) => {
+		handleLeftButtonPressed({
+			floor,
+			direciton: selectingFloor!,
+			selectedFloor,
+			timestamp: Date.now()
+		});
+		selectingFloor = undefined;
+	};
 </script>
 
 <div class="container">
@@ -21,22 +32,25 @@
 	<div class="buttons">
 		<button
 			class="button"
-			onclick={() =>
-				handleLeftButtonPressed({
-					floor,
-					direciton: 1,
-					timestamp: Date.now()
-				})}>⬆️</button
+			onclick={() => (selectingFloor = 0)}
+			disabled={typeof selectingFloor === 'number'}>⬆️</button
 		>
 		<button
 			class="button"
-			onclick={() =>
-				handleLeftButtonPressed({
-					floor,
-					direciton: 0,
-					timestamp: Date.now()
-				})}>⬇️</button
+			onclick={() => (selectingFloor = 1)}
+			disabled={typeof selectingFloor === 'number'}>⬇️</button
 		>
+
+		<div>
+			{#if typeof selectingFloor === 'number'}
+				{#each Array.from(Array(9)) as _, i}
+					<button onclick={() => handleSelectFloor(i + 1)} disabled={i + 1 === floor}
+						>{i + 1}</button
+					>
+				{/each}
+				<button onclick={() => (selectingFloor = undefined)}>X</button>
+			{/if}
+		</div>
 	</div>
 </div>
 
@@ -58,5 +72,9 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1px;
+	}
+
+	.button {
+		width: fit-content;
 	}
 </style>

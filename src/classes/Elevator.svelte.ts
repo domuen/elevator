@@ -1,7 +1,8 @@
-import type { ButtonPressed } from "../types";
+import type { ButtonPressed, Passenger } from "../types";
 
 export default class Elevator {
     floor = $state<number>(undefined!);
+    private passengers: Passenger[] = [];
     private buttonsPressed: ButtonPressed[] = [];
     private nextStop: undefined | number = undefined;
 
@@ -9,11 +10,11 @@ export default class Elevator {
         this.floor = floor;
     }
 
-    handleButtonPress({ floor, direciton, timestamp }: ButtonPressed) {
+    handleButtonPress({ floor, direciton, selectedFloor, timestamp }: ButtonPressed) {
         const index = this.buttonsPressed.findIndex(
             (button) => button.floor === floor && button.direciton === direciton
         );
-        if (index < 0) this.buttonsPressed.push({ floor, direciton, timestamp });
+        if (index < 0) this.buttonsPressed.push({ floor, direciton, selectedFloor, timestamp });
     }
 
     private clearNextStop() {
