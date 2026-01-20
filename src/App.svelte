@@ -22,6 +22,7 @@
 
 {#each floors as floor}
 	<div class="floor">
+		<h2>{floor}</h2>
 		<!-- elevator L -->
 		<LeftElevator
 			{floor}
