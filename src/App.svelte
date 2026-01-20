@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import LeftElevator from './components/LeftElevator.svelte';
-	import RightElevator from './components/RightElevator.svelte';
+	// import RightElevator from './components/RightElevator.svelte';
 	import Elevator from './classes/Elevator.svelte';
 
 	let tickSpeed = 1_000;
@@ -24,13 +24,13 @@
 	<div class="floor">
 		<!-- elevator L -->
 		<LeftElevator
-			elevatorLFloor={elevatorL.floor}
 			{floor}
+			elevatorLFloor={elevatorL.floor}
 			handleLeftButtonPressed={(btn) => elevatorL.handleButtonPress(btn)}
 		/>
 
 		<!-- elevator R -->
-		<RightElevator {tickSpeed} {floor} />
+		<!-- <RightElevator {tickSpeed} {floor} /> -->
 	</div>
 {/each}
 
