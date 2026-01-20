@@ -44,8 +44,9 @@
 		<div>
 			{#if typeof selectingFloor === 'number'}
 				{#each Array.from(Array(9)) as _, i}
-					<button onclick={() => handleSelectFloor(i + 1)} disabled={i + 1 === floor}
-						>{i + 1}</button
+					<button
+						onclick={() => handleSelectFloor(i + 1)}
+						disabled={selectingFloor === 0 ? (i + 1) <= floor : (i + 1) >= floor}>{i + 1}</button
 					>
 				{/each}
 				<button onclick={() => (selectingFloor = undefined)}>X</button>

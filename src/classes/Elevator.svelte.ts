@@ -18,14 +18,34 @@ export default class Elevator {
     }
 
     private clearNextStop() {
-        this.buttonsPressed.splice(
-            this.buttonsPressed.findIndex((button) => button.floor === this.nextStop),
-            1
-        );
+        // remove pressed button and create passenger in the elevator with their stop
+        const index = this.buttonsPressed.findIndex((button) => button.floor === this.nextStop);
+
+        if (index < 0) return this.nextStop = undefined;
+
+        const buttonPressed = this.buttonsPressed[index];
+        this.passengers.push({
+            selectedFloor: buttonPressed.selectedFloor,
+            direction: buttonPressed.direciton,
+            timestamp: Date.now()
+        });
+
+        this.buttonsPressed.splice(index, 1);
         this.nextStop = undefined;
     };
 
     check() {
+        // prioritize passengers; since they always have a stop, the elevator should go there first
+        if (this.passengers.length > 0) {
+            const passenger = this.passengers.sort((a, b) => a.timestamp - b.timestamp)[0].selectedFloor;
+
+            this.nextStop = passenger;
+
+            this.passengers.splice(this.passengers.findIndex(passenger => passenger.selectedFloor === passenger.selectedFloor))
+
+            return;
+        }
+
         // if there is a next stop, go there and remove the next stop
         if (!!this.nextStop) {
             if (this.floor === this.nextStop) {
