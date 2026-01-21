@@ -12,11 +12,11 @@ export default class Elevator {
         this.floor = floor;
     }
 
-    handleButtonPress({ floor, direciton, selectedFloor, timestamp }: ButtonPressed) {
+    handleButtonPress({ floor, direction, selectedFloor, timestamp }: ButtonPressed) {
         const index = this.buttonsPressed.findIndex(
-            (button) => button.floor === floor && button.direciton === direciton && button.selectedFloor === selectedFloor
+            (button) => button.floor === floor && button.direction === direction && button.selectedFloor === selectedFloor
         );
-        if (index < 0) this.buttonsPressed.push({ floor, direciton, selectedFloor, timestamp });
+        if (index < 0) this.buttonsPressed.push({ floor, direction: direction, selectedFloor, timestamp });
     }
 
     check() {
@@ -43,7 +43,7 @@ export default class Elevator {
 
                             this.passengers.push({
                                 selectedFloor: button.selectedFloor,
-                                direction: button.direciton,
+                                direction: button.direction,
                                 timestamp: Date.now()
                             });
                         }
@@ -51,7 +51,7 @@ export default class Elevator {
                         // if the elevator has no direction, everyone waiting needs to get in
                         if (ascending === undefined) return addPassenger();
                         // if there is a direction, we need to filter passengers entering by said direction
-                        if (button.direciton === (ascending ? 0 : 1)) addPassenger();
+                        if (button.direction === (ascending ? 0 : 1)) addPassenger();
                     }
                 });
 

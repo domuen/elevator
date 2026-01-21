@@ -9,12 +9,12 @@
 	}
 
 	let { elevatorLFloor, floor, handleLeftButtonPressed }: Props = $props();
-	let selectingFloor: undefined | ButtonPressed['direciton'] = $state(undefined);
+	let selectingFloor: undefined | ButtonPressed['direction'] = $state(undefined);
 
 	const handleSelectFloor = (selectedFloor: number) => {
 		handleLeftButtonPressed({
 			floor,
-			direciton: selectingFloor!,
+			direction: selectingFloor!,
 			selectedFloor,
 			timestamp: Date.now()
 		});
