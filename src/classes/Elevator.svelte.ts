@@ -2,9 +2,11 @@ import type { ButtonPressed, Passenger } from "../types";
 
 export default class Elevator {
     floor = $state<number>(undefined!);
-    private passengers: Passenger[] = [];
-    private buttonsPressed: ButtonPressed[] = [];
-    private nextStop: undefined | number = undefined;
+    // passengers: Passenger[] = [];
+    // buttonsPressed: ButtonPressed[] = [];
+    passengers = $state<Passenger[]>([]);
+    buttonsPressed = $state<ButtonPressed[]>([]);
+    private nextStop: undefined | number = undefined; // this tuple contains the next stop floor, and the passenger (if applicable)
 
     constructor(floor: number) {
         this.floor = floor;
@@ -12,56 +14,78 @@ export default class Elevator {
 
     handleButtonPress({ floor, direciton, selectedFloor, timestamp }: ButtonPressed) {
         const index = this.buttonsPressed.findIndex(
-            (button) => button.floor === floor && button.direciton === direciton
+            (button) => button.floor === floor && button.direciton === direciton && button.selectedFloor === selectedFloor
         );
         if (index < 0) this.buttonsPressed.push({ floor, direciton, selectedFloor, timestamp });
     }
 
-    private clearNextStop() {
-        // remove pressed button and create passenger in the elevator with their stop
-        const index = this.buttonsPressed.findIndex((button) => button.floor === this.nextStop);
-
-        if (index < 0) return this.nextStop = undefined;
-
-        const buttonPressed = this.buttonsPressed[index];
-        this.passengers.push({
-            selectedFloor: buttonPressed.selectedFloor,
-            direction: buttonPressed.direciton,
-            timestamp: Date.now()
-        });
-
-        this.buttonsPressed.splice(index, 1);
-        this.nextStop = undefined;
-    };
-
     check() {
-        // prioritize passengers; since they always have a stop, the elevator should go there first
-        if (this.passengers.length > 0) {
-            const passenger = this.passengers.sort((a, b) => a.timestamp - b.timestamp)[0].selectedFloor;
-
-            this.nextStop = passenger;
-
-            this.passengers.splice(this.passengers.findIndex(passenger => passenger.selectedFloor === passenger.selectedFloor))
-
-            return;
-        }
-
-        // if there is a next stop, go there and remove the next stop
+        // prioritize next stop; if there is a next stop, the elevator needs to move there
+        // buttons and passenger stops need to be evaluated in this block to manage traffic on each floor
         if (!!this.nextStop) {
             if (this.floor === this.nextStop) {
-                this.clearNextStop();
-            } else if (this.floor < this.nextStop!) {
+                this.nextStop = undefined;
+            } else if (this.floor < this.nextStop) {
                 this.floor = this.floor + 1;
-                if (this.floor === this.nextStop) this.clearNextStop(); // clear immedeately on arrival
             } else {
                 this.floor = this.floor - 1;
-                if (this.floor === this.nextStop) this.clearNextStop(); // clear immedeately on arrival
             }
 
-            return;
+            {
+                const ascending: undefined | boolean = !this.nextStop ? undefined : this.nextStop > this.floor;
+
+                const pickUps: number[] = [];
+
+                this.buttonsPressed.forEach((button, i) => {
+                    if (button.floor === this.floor) {
+                        const addPassenger = () => {
+                            pickUps.push(i);
+
+                            this.passengers.push({
+                                selectedFloor: button.selectedFloor,
+                                direction: button.direciton,
+                                timestamp: Date.now()
+                            });
+                        }
+
+                        // if the elevator has no direction, everyone waiting needs to get in
+                        if (ascending === undefined) return addPassenger();
+                        // if there is a direction, we need to filter passengers entering by said direction
+                        if (button.direciton === (ascending ? 0 : 1)) addPassenger();
+                    }
+                });
+
+                this.buttonsPressed = this.buttonsPressed.filter((_, i) => !pickUps.includes(i));
+            }
+
+            // drop-off passengers on the way
+            const dropOffs: number[] = [];
+
+            this.passengers.forEach((passenger, i) => {
+                if (passenger.selectedFloor === this.floor) dropOffs.push(i);
+            });
+
+            if (dropOffs.length) console.log("dropping off")
+
+            this.passengers = this.passengers.filter((_, i) => !dropOffs.includes(i));
+
+            // evaluate the next stop
+            // if 
         }
 
-        // if there is NOT a next stop, evaluate the next stop based on buttons pressed
+        // passengers needs to be stored for visuals
+        // sort by the stops going in the current direction and change the next stop to whoever is first down the row
+        if (this.passengers.length > 0) {
+            // const filtered = this.passengers.filter(passenger => passenger.direction === this.passengers[0].direction);
+            // const sorted = filtered.sort((a, b) => a.selectedFloor - b.selectedFloor);
+
+            // this.nextStop
+            // return;
+            const sorted = this.passengers.sort((a, b) => a.timestamp - b.timestamp);
+            this.nextStop = sorted[0].selectedFloor;
+        }
+
+        // if there is NOT a next stop or a passenger, continue evaluating the next stop based on buttons pressed
         if (this.buttonsPressed.length <= 0) return;
 
         this.nextStop = this.buttonsPressed.sort((a, b) => a.timestamp - b.timestamp)[0].floor;
