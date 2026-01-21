@@ -20,9 +20,6 @@
 	});
 </script>
 
-passengers: {JSON.stringify(elevatorL.passengers)}
-<br />
-buttons: {JSON.stringify(elevatorL.buttonsPressed)}
 {#each floors as floor}
 	<div class="floor">
 		<h2>{floor}</h2>
