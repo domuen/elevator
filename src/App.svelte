@@ -1,17 +1,19 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import LeftElevator from './components/LeftElevator.svelte';
-	// import RightElevator from './components/RightElevator.svelte';
+	import RightElevator from './components/RightElevator.svelte';
 	import Elevator from './classes/Elevator.svelte';
 
-	let tickSpeed = 1_000;
-	let floors: number[] = [9, 8, 7, 6, 5, 4, 3, 2, 1];
+	const tickSpeed = 1_000;
+	const floors: number[] = [9, 8, 7, 6, 5, 4, 3, 2, 1];
 
 	const elevatorL = new Elevator(1);
+	const elevatorR = new Elevator(6);
 
 	onMount(() => {
 		const interval = setInterval(() => {
 			elevatorL.check();
+			elevatorR.check();
 		}, tickSpeed);
 
 		return () => {
@@ -33,7 +35,12 @@
 				/>
 
 				<!-- elevator R -->
-				<!-- <RightElevator {tickSpeed} {floor} /> -->
+				<RightElevator
+					{floor}
+					elevatorLFloor={elevatorR.floor}
+					passengers={elevatorR.passengers.length}
+					handleLeftButtonPressed={(btn) => elevatorR.handleButtonPress(btn)}
+				/>
 			</div>
 		{/each}
 	</div>
@@ -53,11 +60,12 @@
 
 	.floor {
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
 		/* align-items: center; */
-		justify-content: space-evenly;
+		justify-content: center;
+		border-top: 1px solid white;
 		width: 100%;
 		min-height: 100px;
-		border-top: 1px solid white;
+		gap: 40px;
 	}
 </style>

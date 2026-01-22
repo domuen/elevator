@@ -71,10 +71,11 @@
 <style>
 	.container {
 		display: flex;
-		width: 50%;
 		height: calc(100vh / 10);
 		justify-content: end;
-		gap: 20px;
+		align-items: center;
+		gap: 10px;
+		width: 50%;
 	}
 
 	.elevator {
