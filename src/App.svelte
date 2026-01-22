@@ -20,25 +20,42 @@
 	});
 </script>
 
-{#each floors as floor}
-	<div class="floor">
-		<h2>{floor}</h2>
-		<!-- elevator L -->
-		<LeftElevator
-			{floor}
-			elevatorLFloor={elevatorL.floor}
-			handleLeftButtonPressed={(btn) => elevatorL.handleButtonPress(btn)}
-		/>
+<main>
+	<div class="app-container">
+		{#each floors as floor}
+			<div class="floor">
+				<!-- elevator L -->
+				<LeftElevator
+					{floor}
+					elevatorLFloor={elevatorL.floor}
+					passengers={elevatorL.passengers.length}
+					handleLeftButtonPressed={(btn) => elevatorL.handleButtonPress(btn)}
+				/>
 
-		<!-- elevator R -->
-		<!-- <RightElevator {tickSpeed} {floor} /> -->
+				<!-- elevator R -->
+				<!-- <RightElevator {tickSpeed} {floor} /> -->
+			</div>
+		{/each}
 	</div>
-{/each}
+</main>
 
 <style>
+	main {
+		display: flex;
+		justify-content: center;
+	}
+
+	.app-container {
+		max-width: 400px;
+		width: 100%;
+		justify-self: center;
+	}
+
 	.floor {
 		display: flex;
-		gap: 50px;
+		flex-direction: column;
+		/* align-items: center; */
+		justify-content: space-evenly;
 		width: 100%;
 		min-height: 100px;
 		border-top: 1px solid white;
