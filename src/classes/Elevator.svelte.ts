@@ -39,6 +39,11 @@ export default class Elevator {
                 if (ascending === undefined) return addPassenger();
                 // if there is a direction, we need to filter passengers entering by said direction
                 if (button.direction === (ascending ? 0 : 1)) addPassenger();
+                /*
+                    the issue with this approach is if the elevator is ascending to pick up someone going down (descending)
+                    a passenger going up will be added to the elevator and prioritized, although they should wait until the elevator is ascending;
+                    the elevator should only allow descending passengers since the down button was pressed first (and vice versa)
+                */
             }
         });
 
