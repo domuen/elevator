@@ -1,6 +1,7 @@
 <script lang="ts">
 	import classnames from 'classnames';
 	import type { ButtonPressed } from '../types';
+	import Modal from './Modal.svelte';
 
 	interface Props {
 		floor: number;
@@ -11,6 +12,15 @@
 
 	let props: Props = $props();
 	let selectingFloor: undefined | ButtonPressed['direction'] = $state(undefined);
+	let elevatorButtonAnchor = $state({ x: 0, y: 0 });
+
+	const handleOpenModal = (e: MouseEvent, direction: ButtonPressed['direction']) => {
+		elevatorButtonAnchor = {
+			x: e.clientX,
+			y: e.clientY
+		};
+		selectingFloor = direction;
+	};
 
 	const handleSelectFloor = (selectedFloor: number) => {
 		props.handleLeftButtonPressed({
@@ -24,6 +34,25 @@
 </script>
 
 <div class="container">
+	<Modal
+		isOpen={selectingFloor !== undefined}
+		onClose={() => (selectingFloor = undefined)}
+		anchor={elevatorButtonAnchor}
+	>
+		{#if typeof selectingFloor === 'number'}
+			{#each Array.from(Array(9)) as _, i}
+				{@const floor = i + 1}
+
+				<button
+					onclick={() => handleSelectFloor(floor)}
+					disabled={selectingFloor === 0 ? floor <= props.floor : floor >= props.floor}
+					>{floor}</button
+				>
+			{/each}
+			<button onclick={() => (selectingFloor = undefined)}>X</button>
+		{/if}
+	</Modal>
+
 	{#if props.elevatorLFloor === props.floor}
 		<div class={classnames('elevator')}>
 			<div class="elevator-details">
@@ -44,27 +73,14 @@
 	<div class="buttons">
 		<button
 			class="button"
-			onclick={() => (selectingFloor = 0)}
+			onclick={(e) => handleOpenModal(e, 0)}
 			disabled={typeof selectingFloor === 'number'}>⬆️</button
 		>
 		<button
 			class="button"
-			onclick={() => (selectingFloor = 1)}
+			onclick={(e) => handleOpenModal(e, 1)}
 			disabled={typeof selectingFloor === 'number'}>⬇️</button
 		>
-
-		<div>
-			{#if typeof selectingFloor === 'number'}
-				{#each Array.from(Array(9)) as _, i}
-					<button
-						onclick={() => handleSelectFloor(i + 1)}
-						disabled={selectingFloor === 0 ? i + 1 <= props.floor : i + 1 >= props.floor}
-						>{i + 1}</button
-					>
-				{/each}
-				<button onclick={() => (selectingFloor = undefined)}>X</button>
-			{/if}
-		</div>
 	</div>
 </div>
 
